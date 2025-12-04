@@ -189,23 +189,75 @@ def determine_data():
 # File Handling
 
 
-def text(airport_code,year,head,task_b):
-    with open("results.txt","a")as file:        #opens the file named results.txt   ("a" -> append to the text file)
-        head_line = f"File {head}"
-        file.write("*"*len(head_line)+"\n")     #"file.write(....)" --> This writes the actual text into the file.
-        file.write(head_line+"\n")
-        file.write("*"*len(head_line)+"\n")
-
-        file.write(f"the total number of flights from this airport was {task_b["total_of_flights"]}\n")
-        file.write(f"the total number of flights departing terminal two was {task_b["count_of_terminal_2"]}\n")
-        file.write(f"the total number of flights under 600 miles was {task_b["under_600_miles"]}\n")
-        file.write(f"there were {task_b["air_france"]} air france flights from this airport\n")
-        file.write(f"there were {task_b["temp_below_15"]} flights departing in temperature below 15 degrees\n")
-        file.write(f"there was an average of {task_b["british_airways_avg_per_hr"]} british airways flights per hour from this airport\n")
-        file.write(f"british airways planes made up {task_b["percentage_of_BA"]}% of all departures\n")
-        file.write(f"{task_b["airfrance_delay_flight_percentage"]}% of Air France departures were delayed\n")
-        file.write(f"There were {task_b["length_of_rainy_hours"]} hours in which rain fell\n")
-        file.write(f"the least common destination are {task_b["least_common_destination_2"]}\n")
+def text(airport_code, year, head, task_b):
+    # This creates a file named 'report.html' instead of 'results.txt'
+    filename = "report.html"
+    
+    with open(filename, "w") as file:
+        # We are writing HTML code into the file
+        file.write(f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Airport Data Report</title>
+            <link rel="stylesheet" type="text/css" href="style.css">
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Airport Analysis Results</h1>
+                </div>
+                <div class="sub-header">
+                    {head}
+                </div>
+                
+                <div class="content">
+                    <div class="row">
+                        <span class="label">Total Flights:</span>
+                        <span class="value">{task_b["total_of_flights"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Flights from Terminal 2:</span>
+                        <span class="value">{task_b["count_of_terminal_2"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Flights < 600 miles:</span>
+                        <span class="value">{task_b["under_600_miles"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Air France Flights:</span>
+                        <span class="value">{task_b["air_france"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Flights below 15°C:</span>
+                        <span class="value">{task_b["temp_below_15"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Avg BA Flights/Hour:</span>
+                        <span class="value">{task_b["british_airways_avg_per_hr"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">British Airways %:</span>
+                        <span class="value">{task_b["percentage_of_BA"]}%</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Air France Delayed %:</span>
+                        <span class="value">{task_b["airfrance_delay_flight_percentage"]}%</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Rainy Hours:</span>
+                        <span class="value">{task_b["length_of_rainy_hours"]}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Least Common Dest:</span>
+                        <span class="value">{task_b["least_common_destination_2"][0]}</span>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        """)
+    print(f"Report generated successfully: {filename}")
 
         
 
@@ -237,7 +289,7 @@ def graph(code,year):
     window = GraphWin("Histogram", 900, 900)
 
     # This line changes the background color of the window 
-    window.setBackground("white")        
+    window.setBackground("#f0f2f5") # Matches CSS background 
 
     # I assign that each bar in your chart will be 25 pixels tall
     bar_thickness=25
@@ -265,7 +317,8 @@ def graph(code,year):
         #using its top-left corner (Point(x_axis1, y_axis1)) and its bottom-right corner (Point(x_axis2, y_axis2))
         bar = Rectangle (Point(x_axis1, y_axis1), Point(x_axis2, y_axis2))
         #This sets the bar's color to black ("#000000")
-        bar.setFill("#000000")
+        bar.setFill("#3498db")  # Matches CSS Blue
+        bar.setOutline("#2c3e50") # Dark border
         #This command makes the bar actually appear
         bar.draw(window)
         #This creates the hour label (bar_space = Text(.....))
@@ -283,6 +336,8 @@ def graph(code,year):
 
     title = Text(Point(400, 20), f"Departures by hour for {code_of_air_lines[airline_histogram]} from {code} {year}")
     title.setSize(18)
+    title.setTextColor("#2c3e50") # Dark Blue Text
+    title.setStyle("bold")
     title.draw(window)
 
     subtitle = Text(Point(65, 315), f"HOURS\n\n 00:00\n to\n 12:00\n")
